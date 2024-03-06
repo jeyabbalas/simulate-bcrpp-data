@@ -6,7 +6,8 @@ export default defineConfig({
         lib: {
             entry: resolve(__dirname, 'lib/main.js'),
             name: 'simulate-bcrpp-data',
-            fileName: 'simulate-bcrpp-data'
+            fileName: 'simulate-bcrpp-data',
+            formats: ['es']
         }
     }
 })
