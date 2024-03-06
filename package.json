@@ -1,0 +1,21 @@
+{
+  "name": "simulate-bcrpp-data",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "files": ["dist"],
+  "module": "dist/simulate-bcrpp-data.js",
+    "exports": {
+        ".": {
+          "import": "./dist/simulate-bcrpp-data.js"
+        }
+    },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.1.4"
+  }
+}
