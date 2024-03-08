@@ -1,4 +1,4 @@
-import {generateDesignMatrix} from './lib/main.js';
+import {generateDesignMatrix, generateSimulatedICARELitData} from './lib/main.js';
 
 const formula = `C(age_at_menarche, levels=['13','<=10','11','12','14','15','>=16']) + 
 C(parity, levels=['0','1','2','>=3']) + 
@@ -11,15 +11,12 @@ C(age_at_menopause, levels=['50-55','<40','40-45','45-50','>=55']) +
 height + 
 (C(hrt, levels=['never','current','former']) + hrt_type) * C(bmi_curc, levels=['<25','25-30','>=30'])`;
 
-const formula2 = `C(age_at_menarche, levels=['13','<=10','11','12','14','15','>=16']) + 
+const formula2 = `
 C(parity, levels=['0','1','2','>=3']) + 
 C(age_first_birth, levels=['<20','20-25','25-30','>=30']) + 
-oc_ever + 
-C(alcohol_intake, levels=['0','>0-5','5-15','15-25','25-35','35-45','>=45']) + 
-bbd + 
-famhist + 
-C(age_at_menopause, levels=['50-55','<40','40-45','45-50','>=55']) + 
-height`;
+height +
+(C(hrt, levels=['never','current','former']) + hrt_type) * C(bmi_curc, levels=['<25','25-30','>=30'])
+`;
 
 const dataset = [
     {
@@ -66,4 +63,6 @@ const dataset = [
     }
 ];
 
-console.log(generateDesignMatrix(formula2, dataset));
+//console.log(generateDesignMatrix(formula2, dataset));
+const simulatedData = await generateSimulatedICARELitData({n: 10});
+console.log(simulatedData);
