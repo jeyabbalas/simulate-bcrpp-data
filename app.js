@@ -64,5 +64,5 @@ const dataset = [
 ];
 
 //console.log(generateDesignMatrix(formula2, dataset));
-const simulatedData = await generateSimulatedICARELitData({n: 10});
+const simulatedData = await generateSimulatedICARELitData({n: 5});
 console.log(simulatedData);
