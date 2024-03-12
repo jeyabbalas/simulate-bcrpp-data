@@ -1,0 +1,14 @@
+{
+  "age_at_menarche": "str",
+  "parity": "str",
+  "age_first_birth": "str",
+  "oc_ever": "int",
+  "alcohol_intake": "str",
+  "bbd": "int",
+  "famhist": "int",
+  "age_at_menopause": "str",
+  "height": "float",
+  "hrt": "str",
+  "hrt_type": "int",
+  "bmi_curc": "str"
+}
