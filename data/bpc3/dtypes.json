@@ -1,0 +1,16 @@
+{
+  "family_history": "int",
+  "age_at_menarche": "str",
+  "parity": "str",
+  "age_at_first_child_birth": "str",
+  "age_at_menopause": "str",
+  "height": "str",
+  "bmi": "str",
+  "menopause_hrt": "int",
+  "menopause_hrt_e": "int",
+  "menopause_hrt_c": "int",
+  "current_hrt": "int",
+  "alcohol_consumption": "str",
+  "smoking_status": "str",
+
+}
