@@ -11,6 +11,5 @@
   "menopause_hrt_c": "int",
   "current_hrt": "int",
   "alcohol_consumption": "str",
-  "smoking_status": "str",
-
+  "smoking_status": "str"
 }
