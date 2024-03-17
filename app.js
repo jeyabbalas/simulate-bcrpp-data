@@ -1,4 +1,4 @@
-import {generateSimulatedBPC3Data} from './lib/main.js';
+import {generateSimulatedBPC3Data} from 'https://cdn.jsdelivr.net/gh/jeyabbalas/simulate-bcrpp-data@v0.0.1/dist/simulate-bcrpp-data.js';
 import {fetchFileAsText, fetchFileAsJson} from './lib/utils.js';
 import {fitLogisticRegression} from './lib/stats.js';
 
