@@ -125,36 +125,88 @@ function displayLogisticRegressionResults(results) {
 }
 
 
+function showLoadingIndicator(divUI, message = "Loading...") {
+    // Create a container for the loader and text
+    const loaderContainer = document.createElement('div');
+    loaderContainer.style.display = 'flex';
+    loaderContainer.style.alignItems = 'center';
+    loaderContainer.className = 'loader-container';
+
+    // Create the loader
+    const loader = document.createElement('div');
+    loader.className = 'loader';
+    loaderContainer.appendChild(loader);
+
+    // Create the text element
+    const text = document.createElement('span');
+    text.textContent = message;
+    text.style.marginLeft = '10px';
+    loaderContainer.appendChild(text);
+
+    // Append the loader container to divUI
+    divUI.appendChild(loaderContainer);
+}
+
+
+function removeLoadingIndicator(divUI) {
+    const loaderContainer = divUI.querySelector('.loader-container');
+    if (loaderContainer) {
+        divUI.removeChild(loaderContainer);
+    }
+}
+
+
+async function generateAndDisplayDataset(divUI) {
+    showLoadingIndicator(divUI, "Generating simulated BPC3 data...");
+
+    // const simulatedData = await generateSimulatedBPC3Data({n: 25000});  // Uncomment for prospective cohort data
+    const simulatedData = await generateSimulatedBPC3Data({n: 10000, caseControl: true});
+
+    removeLoadingIndicator(divUI);
+
+    divUI.innerHTML += `<h2>Simulated BPC3 Data</h2>`;
+    displayDataset(divUI, simulatedData);
+
+    return simulatedData;
+}
+
+
+async function fitLogisticRegressionAndDisplayResults(divUI, simulatedData) {
+    showLoadingIndicator(divUI, "Fitting logistic regression model...");
+
+    // BPC3 parameters
+    const rootUrl = "https://raw.githubusercontent.com/jeyabbalas/simulate-bcrpp-data/main/data/bpc3/";
+    const formulaUrl = rootUrl + "model_formula.txt";
+    const dtypesUrl = rootUrl + "dtypes.json";
+
+    const formula = "observed_outcome ~ study_entry_age + " + (await fetchFileAsText(formulaUrl));
+    const dtypes = await fetchFileAsJson(dtypesUrl);
+
+    // BPC3 modeling
+    const modelOutput = await fitLogisticRegression({
+        formula,
+        dataset: JSON.stringify(simulatedData),
+        dtypes: JSON.stringify(dtypes),
+        maxiter: 1000
+    });
+    const factorsToAdjust = ["Intercept", "study_entry_age"];
+    const payload = Object.keys(modelOutput)
+        .filter(key => !factorsToAdjust.includes(key))
+        .reduce((obj, key) => {
+            obj[key] = modelOutput[key];
+            return obj;
+        }, {});
+
+    removeLoadingIndicator(divUI);
+
+    divUI.innerHTML += `<hr><h2>Logistic Regression Results</h2>`;
+    displayLogisticRegressionResults(payload);
+
+    return payload;
+}
+
+
 const divID = 'app';
 let divUI = divID ? document.getElementById(divID) : document.createElement('div');
-
-//const simulatedData = await generateSimulatedBPC3Data({n: 25000});  // Uncomment for prospective cohort data
-const simulatedData = await generateSimulatedBPC3Data({n: 10000, caseControl: true});
-divUI.innerHTML = `<h2>Simulated BPC3 Data</h2>`;
-displayDataset(divUI, simulatedData);
-
-// BPC3 parameters
-const rootUrl = "https://raw.githubusercontent.com/jeyabbalas/simulate-bcrpp-data/main/data/bpc3/";
-const formulaUrl = rootUrl + "model_formula.txt";
-const dtypesUrl = rootUrl + "dtypes.json";
-
-const formula = "observed_outcome ~ study_entry_age + " + (await fetchFileAsText(formulaUrl));
-const dtypes = await fetchFileAsJson(dtypesUrl);
-
-// BPC3 modeling
-const modelOutput = await fitLogisticRegression({
-    formula,
-    dataset: JSON.stringify(simulatedData),
-    dtypes: JSON.stringify(dtypes),
-    maxiter: 1000
-});
-const factorsToAdjust = ["Intercept", "study_entry_age"];
-const payload = Object.keys(modelOutput)
-    .filter(key => !factorsToAdjust.includes(key))
-    .reduce((obj, key) => {
-        obj[key] = modelOutput[key];
-        return obj;
-    }, {});
-
-divUI.innerHTML += `<hr><h2>Logistic Regression Results</h2>`;
-displayLogisticRegressionResults(payload);
+const simulatedData = await generateAndDisplayDataset(divUI);
+const payload = await fitLogisticRegressionAndDisplayResults(divUI, simulatedData);
