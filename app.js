@@ -129,32 +129,32 @@ const divID = 'app';
 let divUI = divID ? document.getElementById(divID) : document.createElement('div');
 
 //const simulatedData = await generateSimulatedBPC3Data({n: 25000});  // Uncomment for prospective cohort data
-const simulatedData = await generateSimulatedBPC3Data({n: 1000, caseControl: true});
+const simulatedData = await generateSimulatedBPC3Data({n: 10000, caseControl: true});
 divUI.innerHTML = `<h2>Simulated BPC3 Data</h2>`;
 displayDataset(divUI, simulatedData);
 
-// // BPC3 parameters
-// const rootUrl = "https://raw.githubusercontent.com/jeyabbalas/simulate-bcrpp-data/main/data/bpc3/";
-// const formulaUrl = rootUrl + "model_formula.txt";
-// const dtypesUrl = rootUrl + "dtypes.json";
-//
-// const formula = "observed_outcome ~ study_entry_age + " + (await fetchFileAsText(formulaUrl));
-// const dtypes = await fetchFileAsJson(dtypesUrl);
-//
-// // BPC3 modeling
-// const modelOutput = await fitLogisticRegression({
-//     formula,
-//     dataset: JSON.stringify(simulatedData),
-//     dtypes: JSON.stringify(dtypes),
-//     maxiter: 1000
-// });
-// const factorsToAdjust = ["Intercept", "study_entry_age"];
-// const payload = Object.keys(modelOutput)
-//     .filter(key => !factorsToAdjust.includes(key))
-//     .reduce((obj, key) => {
-//         obj[key] = modelOutput[key];
-//         return obj;
-//     }, {});
-//
-// divUI.innerHTML += `<hr><h2>Logistic Regression Results</h2>`;
-// displayLogisticRegressionResults(payload);
+// BPC3 parameters
+const rootUrl = "https://raw.githubusercontent.com/jeyabbalas/simulate-bcrpp-data/main/data/bpc3/";
+const formulaUrl = rootUrl + "model_formula.txt";
+const dtypesUrl = rootUrl + "dtypes.json";
+
+const formula = "observed_outcome ~ study_entry_age + " + (await fetchFileAsText(formulaUrl));
+const dtypes = await fetchFileAsJson(dtypesUrl);
+
+// BPC3 modeling
+const modelOutput = await fitLogisticRegression({
+    formula,
+    dataset: JSON.stringify(simulatedData),
+    dtypes: JSON.stringify(dtypes),
+    maxiter: 1000
+});
+const factorsToAdjust = ["Intercept", "study_entry_age"];
+const payload = Object.keys(modelOutput)
+    .filter(key => !factorsToAdjust.includes(key))
+    .reduce((obj, key) => {
+        obj[key] = modelOutput[key];
+        return obj;
+    }, {});
+
+divUI.innerHTML += `<hr><h2>Logistic Regression Results</h2>`;
+displayLogisticRegressionResults(payload);
